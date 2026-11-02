@@ -1,0 +1,6 @@
+# Minimal Supabase CLI config. Run `supabase link --project-ref <ref>` then
+# `supabase db push` to apply migrations in supabase/migrations.
+project_id = "agencyos-ai"
+
+[db]
+major_version = 17
