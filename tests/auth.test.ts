@@ -80,6 +80,24 @@ describe('email + password authentication', () => {
   })
 })
 
+describe('demo access', () => {
+  it('signs into the demo account without a password', async () => {
+    await adminPool().query(`insert into "user"(id, name, email, "emailVerified") values ('demo_user', 'Demo Owner', 'demo@agencyos.test', true) on conflict do nothing`)
+    const res = await post('/demo/sign-in', {})
+    expect(res.status).toBe(200)
+    const session = await getAuth().api.getSession({ headers: new Headers({ cookie: cookieFrom(res) }) })
+    expect(session?.user.email).toBe('demo@agencyos.test')
+  })
+  it('can be turned off with DEMO_ACCESS=off', async () => {
+    process.env.DEMO_ACCESS = 'off'
+    try {
+      expect((await post('/demo/sign-in', {})).status).toBe(403)
+    } finally {
+      delete process.env.DEMO_ACCESS
+    }
+  })
+})
+
 describe('post-auth redirects', () => {
   it('only allows same-site relative paths', () => {
     expect(safeNext('/app/clients')).toBe('/app/clients')

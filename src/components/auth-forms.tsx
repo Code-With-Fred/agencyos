@@ -188,3 +188,34 @@ export function ResetPasswordForm({ token }: { token: string }) {
     </form>
   )
 }
+
+export function DemoLoginButton() {
+  const router = useRouter()
+  const [pending, setPending] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+  return (
+    <div className="space-y-2">
+      {error ? <Notice tone="danger">{error}</Notice> : null}
+      <Button
+        type="button"
+        variant="secondary"
+        className="w-full"
+        loading={pending}
+        onClick={async () => {
+          setPending(true)
+          setError(null)
+          const res = await fetch('/api/auth/demo/sign-in', { method: 'POST', headers: { 'content-type': 'application/json' }, body: '{}' }).catch(() => null)
+          setPending(false)
+          if (!res?.ok) {
+            const body = (await res?.json().catch(() => null)) as { message?: string } | null
+            return setError(body?.message ?? 'The demo is not available right now.')
+          }
+          router.replace('/app')
+          router.refresh()
+        }}
+      >
+        Explore the live demo — no sign-in needed
+      </Button>
+    </div>
+  )
+}

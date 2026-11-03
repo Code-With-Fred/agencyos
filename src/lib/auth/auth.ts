@@ -1,6 +1,7 @@
 import 'server-only'
 import { betterAuth } from 'better-auth'
 import { nextCookies } from 'better-auth/next-js'
+import { demoAccess } from './demo-access'
 import { env, appUrl } from '@/lib/env'
 import { getPool } from '@/lib/db/pool'
 import { isEmailConfigured, layoutEmail, sendEmail, escapeHtml } from '@/lib/email/send'
@@ -56,6 +57,7 @@ function createAuth() {
         '/sign-up/email': { window: 60 * 60, max: 10 },
         '/request-password-reset': { window: 60 * 60, max: 5 },
         '/change-password': { window: 60 * 10, max: 5 },
+        '/demo/sign-in': { window: 60 * 10, max: 20 },
       },
     },
     advanced: {
@@ -67,7 +69,7 @@ function createAuth() {
       cookiePrefix: 'agencyos',
       ipAddress: { ipAddressHeaders: ['x-forwarded-for', 'x-real-ip'] },
     },
-    plugins: [nextCookies()],
+    plugins: [demoAccess(), nextCookies()],
   })
 }
 
