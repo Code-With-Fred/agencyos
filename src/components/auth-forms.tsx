@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import { authClient } from '@/lib/auth/auth-client'
 import { Button } from '@/components/ui/button'
 import { Field, Input } from '@/components/ui/input'
+import { PasswordInput } from '@/components/ui/password-input'
 import { Notice } from '@/components/ui/states'
 import { safeNext } from '@/lib/safe-redirect'
 
@@ -40,7 +41,7 @@ export function LoginForm({ next }: { next?: string }) {
         <Input id="email" name="email" type="email" autoComplete="email" required />
       </Field>
       <Field label="Password" htmlFor="password">
-        <Input id="password" name="password" type="password" autoComplete="current-password" required />
+        <PasswordInput id="password" name="password" autoComplete="current-password" required />
       </Field>
       <div className="flex justify-end">
         <Link href="/forgot-password" className="text-xs text-fg-muted hover:text-fg">
@@ -94,10 +95,10 @@ export function RegisterForm({ next }: { next?: string }) {
         <Input id="email" name="email" type="email" autoComplete="email" required />
       </Field>
       <Field label="Password" htmlFor="password" error={fieldErrors.password} hint="At least 10 characters.">
-        <Input id="password" name="password" type="password" autoComplete="new-password" minLength={10} maxLength={128} required aria-invalid={!!fieldErrors.password} />
+        <PasswordInput id="password" name="password" autoComplete="new-password" minLength={10} maxLength={128} required aria-invalid={!!fieldErrors.password} />
       </Field>
       <Field label="Confirm password" htmlFor="confirm" error={fieldErrors.confirm}>
-        <Input id="confirm" name="confirm" type="password" autoComplete="new-password" required aria-invalid={!!fieldErrors.confirm} />
+        <PasswordInput id="confirm" name="confirm" autoComplete="new-password" required aria-invalid={!!fieldErrors.confirm} />
       </Field>
       <Button type="submit" className="w-full" loading={s.pending}>
         Create account
@@ -176,10 +177,10 @@ export function ResetPasswordForm({ token }: { token: string }) {
     >
       {s.error ? <Notice tone="danger">{s.error}</Notice> : null}
       <Field label="New password" htmlFor="password" hint="At least 10 characters.">
-        <Input id="password" name="password" type="password" autoComplete="new-password" minLength={10} maxLength={128} required />
+        <PasswordInput id="password" name="password" autoComplete="new-password" minLength={10} maxLength={128} required />
       </Field>
       <Field label="Confirm new password" htmlFor="confirm">
-        <Input id="confirm" name="confirm" type="password" autoComplete="new-password" required />
+        <PasswordInput id="confirm" name="confirm" autoComplete="new-password" required />
       </Field>
       <Button type="submit" className="w-full" loading={s.pending}>
         Update password

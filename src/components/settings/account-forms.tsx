@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { ConfirmDialog } from '@/components/ui/dialog'
 import { Field, Input } from '@/components/ui/input'
+import { PasswordInput } from '@/components/ui/password-input'
 import { Notice } from '@/components/ui/states'
 import { toast } from '@/components/ui/toaster'
 import { deleteOrganizationAction } from '@/actions/org'
@@ -84,14 +85,14 @@ export function ChangePasswordForm() {
         <CardContent className="space-y-4">
           {error ? <Notice tone="danger">{error}</Notice> : null}
           <Field label="Current password" htmlFor="current">
-            <Input id="current" name="current" type="password" autoComplete="current-password" required />
+            <PasswordInput id="current" name="current" autoComplete="current-password" required />
           </Field>
           <div className="grid gap-4 sm:grid-cols-2">
             <Field label="New password" htmlFor="next" hint="At least 10 characters.">
-              <Input id="next" name="next" type="password" autoComplete="new-password" minLength={10} maxLength={128} required />
+              <PasswordInput id="next" name="next" autoComplete="new-password" minLength={10} maxLength={128} required />
             </Field>
             <Field label="Confirm new password" htmlFor="confirm">
-              <Input id="confirm" name="confirm" type="password" autoComplete="new-password" required />
+              <PasswordInput id="confirm" name="confirm" autoComplete="new-password" required />
             </Field>
           </div>
         </CardContent>
