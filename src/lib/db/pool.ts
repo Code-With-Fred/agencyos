@@ -1,15 +1,17 @@
 import 'server-only'
 import pg from 'pg'
-import { Kysely, PostgresDialect } from 'kysely'
+import { Kysely, PGliteDialect, PostgresDialect } from 'kysely'
 import { env } from '@/lib/env'
 import type { Database } from './types'
+import { isPreviewMode } from '@/lib/preview'
+import type { PGlite } from '@electric-sql/pglite'
 
 // date -> 'YYYY-MM-DD' (avoid timezone shifts), numeric -> number, int8 -> number
 pg.types.setTypeParser(1082, (v: string) => v)
 pg.types.setTypeParser(1700, (v: string) => Number.parseFloat(v))
 pg.types.setTypeParser(20, (v: string) => Number(v))
 
-type DbGlobal = { __agencyosPool?: pg.Pool; __agencyosDb?: Kysely<Database> }
+type DbGlobal = { __agencyosPool?: pg.Pool; __agencyosDb?: Kysely<Database>; __agencyosPreview?: Promise<PGlite> }
 const g = globalThis as unknown as DbGlobal
 
 export function buildPoolConfig(databaseUrl: string, opts: { ssl?: 'disable' | 'require' | 'verify'; ca?: string } = {}): pg.PoolConfig {
@@ -38,6 +40,7 @@ export function buildPoolConfig(databaseUrl: string, opts: { ssl?: 'disable' | '
 export function getPool(): pg.Pool {
   if (!g.__agencyosPool) {
     const e = env()
+    if (!e.DATABASE_URL) throw new Error('DATABASE_URL is required when PREVIEW_MODE=off')
     g.__agencyosPool = new pg.Pool(buildPoolConfig(e.DATABASE_URL, { ssl: e.DATABASE_SSL, ca: e.DATABASE_CA_CERT }))
     g.__agencyosPool.on('error', (err) => console.error('[db] idle client error', err.message))
   }
@@ -47,7 +50,13 @@ export function getPool(): pg.Pool {
 /** Raw Kysely instance. Application code must use withUser/withSystem. */
 export function getDb(): Kysely<Database> {
   if (!g.__agencyosDb) {
-    g.__agencyosDb = new Kysely<Database>({ dialect: new PostgresDialect({ pool: getPool() }) })
+    if (isPreviewMode()) {
+      // In-memory Postgres with sample data — see lib/db/preview-db.ts.
+      const pglite = () => (g.__agencyosPreview ??= import('./preview-db').then((m) => m.createPreviewDatabase()))
+      g.__agencyosDb = new Kysely<Database>({ dialect: new PGliteDialect({ pglite }) })
+    } else {
+      g.__agencyosDb = new Kysely<Database>({ dialect: new PostgresDialect({ pool: getPool() }) })
+    }
   }
   return g.__agencyosDb
 }

@@ -3,16 +3,21 @@ import { betterAuth } from 'better-auth'
 import { nextCookies } from 'better-auth/next-js'
 import { demoAccess } from './demo-access'
 import { env, appUrl } from '@/lib/env'
-import { getPool } from '@/lib/db/pool'
+import { getDb, getPool } from '@/lib/db/pool'
+import { isPreviewMode } from '@/lib/preview'
 import { isEmailConfigured, layoutEmail, sendEmail, escapeHtml } from '@/lib/email/send'
+
+function missingSecret(): never {
+  throw new Error('BETTER_AUTH_SECRET is required when PREVIEW_MODE=off')
+}
 
 function createAuth() {
   const e = env()
   return betterAuth({
     appName: 'AgencyOS AI',
     baseURL: e.BETTER_AUTH_URL ?? appUrl(),
-    secret: e.BETTER_AUTH_SECRET,
-    database: getPool(),
+    secret: e.BETTER_AUTH_SECRET ?? (isPreviewMode() ? 'preview-mode-only-secret-do-not-use-in-production' : missingSecret()),
+    database: isPreviewMode() ? { db: getDb(), type: 'postgres' } : getPool(),
     trustedOrigins: [appUrl()],
     emailAndPassword: {
       enabled: true,

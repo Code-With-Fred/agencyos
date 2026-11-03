@@ -2,6 +2,7 @@ import { AppShell } from '@/components/app/shell'
 import { isPlatformAdmin, requireOrgContext } from '@/lib/auth/session'
 import { getEntitlements } from '@/lib/licensing/entitlements'
 import { getNotifications } from '@/lib/services/dashboard'
+import { isPreviewMode } from '@/lib/preview'
 
 export const dynamic = 'force-dynamic'
 
@@ -16,6 +17,7 @@ export default async function WorkspaceLayout({ children }: { children: React.Re
       planName={ent.name}
       modules={ent.modules}
       isPlatformAdmin={admin}
+      preview={isPreviewMode()}
       notifications={notifications.map((n) => ({ id: n.id, summary: n.summary, created_at: n.created_at.toISOString(), actorName: n.actorName }))}
     >
       {children}

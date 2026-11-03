@@ -15,9 +15,12 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "db:migrate:local": "node scripts/migrate-local.mjs",
-    "check": "npm run typecheck && npm run lint && npm run test && npm run build"
+    "check": "npm run typecheck && npm run lint && npm run test && npm run build",
+    "prebuild": "node scripts/embed-migrations.mjs",
+    "db:embed": "node scripts/embed-migrations.mjs"
   },
   "dependencies": {
+    "@electric-sql/pglite": "^0.5.14",
     "@google/genai": "2.32.0",
     "@react-pdf/renderer": "4.9.0",
     "@supabase/supabase-js": "2.118.0",

@@ -1,5 +1,6 @@
 // Test environment. DB tests run against a real local Postgres using the
 // non-privileged `agencyos_app` role, so Row Level Security is enforced.
+process.env.PREVIEW_MODE = 'off'
 process.env.DATABASE_URL = process.env.TEST_DATABASE_URL ?? 'postgres://agencyos_app:app_password@localhost:5432/agencyos_vitest'
 process.env.BETTER_AUTH_SECRET = 'test-better-auth-secret-0123456789abcdefghijkl'
 process.env.BETTER_AUTH_URL = 'http://localhost:3000'

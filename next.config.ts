@@ -24,7 +24,7 @@ const csp = [
 
 const nextConfig: NextConfig = {
   poweredByHeader: false,
-  serverExternalPackages: ['@react-pdf/renderer', 'pg'],
+  serverExternalPackages: ['@react-pdf/renderer', 'pg', '@electric-sql/pglite'],
   // PDF routes read the embedded fonts from disk at runtime.
   outputFileTracingIncludes: {
     '/api/pdf/[type]/[id]': ['./assets/fonts/**'],

@@ -6,6 +6,7 @@ import { getAuth } from './auth'
 import { withUser } from '@/lib/db'
 import { AppError } from '@/lib/errors'
 import type { Role } from '@/lib/db/types'
+import { isPreviewMode, PREVIEW_USER } from '@/lib/preview'
 
 export const ACTIVE_ORG_COOKIE = 'agencyos_org'
 
@@ -22,6 +23,8 @@ export const getSession = cache(async () => {
 })
 
 export const getSessionUser = cache(async (): Promise<SessionUser | null> => {
+  // Preview mode: everyone is the sample agency owner; no sign-in needed.
+  if (isPreviewMode()) return { ...PREVIEW_USER, image: null }
   const s = await getSession()
   if (!s) return null
   return { id: s.user.id, name: s.user.name, email: s.user.email, image: s.user.image ?? null }

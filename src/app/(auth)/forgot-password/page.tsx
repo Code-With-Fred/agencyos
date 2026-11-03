@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { redirectInPreview } from '../preview-redirect'
 import Link from 'next/link'
 import { ForgotPasswordForm } from '@/components/auth-forms'
 import { SetupRequired } from '@/components/ui/states'
@@ -8,6 +9,7 @@ export const metadata: Metadata = { title: 'Reset password' }
 export const dynamic = 'force-dynamic'
 
 export default function ForgotPasswordPage() {
+  redirectInPreview()
   const emailReady = integrationStatus().email
   const isDev = env().NODE_ENV !== 'production'
   return (

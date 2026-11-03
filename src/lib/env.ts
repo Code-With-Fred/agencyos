@@ -16,10 +16,11 @@ const optional = z
 const schema = z.object({
   NODE_ENV: z.enum(['development', 'test', 'production']).default('development'),
   NEXT_PUBLIC_APP_URL: z.url().default('http://localhost:3000'),
-  DATABASE_URL: z.string().min(1, 'DATABASE_URL is required'),
+  // Optional in preview mode (PREVIEW_MODE != 'off'), required otherwise.
+  DATABASE_URL: optional,
   DATABASE_CA_CERT: optional,
   DATABASE_SSL: z.enum(['disable', 'require', 'verify']).optional(),
-  BETTER_AUTH_SECRET: z.string().min(32, 'BETTER_AUTH_SECRET must be at least 32 characters'),
+  BETTER_AUTH_SECRET: z.string().min(32, 'BETTER_AUTH_SECRET must be at least 32 characters').optional(),
   BETTER_AUTH_URL: z.url().optional(),
   SUPABASE_URL: optional,
   SUPABASE_SERVICE_ROLE_KEY: optional,

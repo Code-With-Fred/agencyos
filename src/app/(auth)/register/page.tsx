@@ -1,10 +1,14 @@
 import type { Metadata } from 'next'
+import { redirectInPreview } from '../preview-redirect'
 import Link from 'next/link'
 import { RegisterForm } from '@/components/auth-forms'
 
 export const metadata: Metadata = { title: 'Create account' }
 
+export const dynamic = 'force-dynamic'
+
 export default async function RegisterPage({ searchParams }: { searchParams: Promise<{ next?: string }> }) {
+  redirectInPreview()
   const { next } = await searchParams
   return (
     <>

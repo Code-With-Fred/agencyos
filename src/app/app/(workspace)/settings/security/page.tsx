@@ -5,6 +5,8 @@ import { ChangePasswordForm, RevokeSessionsButton } from '@/components/settings/
 import { getAuth } from '@/lib/auth/auth'
 import { getSession, requireOrgContext } from '@/lib/auth/session'
 import { formatDateTime } from '@/lib/utils'
+import { Notice } from '@/components/ui/states'
+import { isPreviewMode } from '@/lib/preview'
 
 export const metadata: Metadata = { title: 'Security' }
 
@@ -17,6 +19,7 @@ function describeAgent(ua: string | null) {
 
 export default async function SecuritySettingsPage() {
   await requireOrgContext()
+  if (isPreviewMode()) return <Notice>Password and session management are disabled in preview mode (sign-in is turned off).</Notice>
   const [session, sessions] = await Promise.all([getSession(), getAuth().api.listSessions({ headers: await headers() })])
   return (
     <>

@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { redirectInPreview } from '../preview-redirect'
 import Link from 'next/link'
 import { DemoLoginButton, LoginForm } from '@/components/auth-forms'
 import { isDemoAccessEnabled } from '@/lib/auth/demo-access'
@@ -8,6 +9,7 @@ export const metadata: Metadata = { title: 'Sign in' }
 export const dynamic = 'force-dynamic'
 
 export default async function LoginPage({ searchParams }: { searchParams: Promise<{ next?: string; reset?: string }> }) {
+  redirectInPreview()
   const { next, reset } = await searchParams
   return (
     <>

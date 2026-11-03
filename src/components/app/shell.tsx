@@ -23,6 +23,7 @@ export type ShellProps = {
   modules: Module[]
   isPlatformAdmin: boolean
   notifications: { id: string; summary: string; created_at: string; actorName: string | null }[]
+  preview?: boolean
   children: React.ReactNode
 }
 
@@ -270,6 +271,11 @@ export function AppShell(props: ShellProps) {
             </DropdownMenu>
           </div>
         </header>
+        {props.preview ? (
+          <div className="border-b border-accent/20 bg-accent-soft/60 px-4 py-2 text-center text-xs text-fg-muted sm:px-6">
+            <span className="font-medium text-fg">Preview mode</span> — you are viewing sample data with sign-in turned off. Changes may reset. Set <code className="font-mono">PREVIEW_MODE=off</code> to go live.
+          </div>
+        ) : null}
         <main className="flex-1">{props.children}</main>
       </div>
       <CommandMenu open={cmdOpen} onOpenChange={setCmdOpen} isPlatformAdmin={props.isPlatformAdmin} />
